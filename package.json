@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^1.5.1",
-    "@types/redux-form": "^7.4.7",
+    "@types/redux-form": "^7.4.8",
     "dotenv": "^5.0.1",
     "firebase": "^4.12.1",
     "firebase-admin": "^5.12.1",

@@ -6,7 +6,6 @@ import { RootReducerState } from '../../../state/reducers';
 import { classModules } from '../home.content';
 import { ModuleListItem } from './module-list-item/module-list-item.component';
 import { ContentModule } from '../../../constants';
-import { UpdateModule } from '../../../state/actions/editModule';
 import { DROP_MODULE } from '../../../state/actions/dropModule';
 
 interface Props {
@@ -22,7 +21,6 @@ const ModuleList: React.SFC<Props> = ({
                                         modules,
                                         className = '',
                                         handleDrop,
-                                        submitUpdatedModule
                                       }: Props) => (
   <div className={`bg-near-white overflow-y-scroll ${className}`} style={{minWidth: '24rem'}}>
     {
@@ -34,7 +32,6 @@ const ModuleList: React.SFC<Props> = ({
           name={module.name}
           complexity={module.complexity}
           modules={modules}
-          onEdit={submitUpdatedModule}
         />
       ))
     }
@@ -49,7 +46,6 @@ const ConnectedModuleList = connect(
   }),
   {
     handleDrop: DROP_MODULE.createAction,
-    submitUpdatedModule: UpdateModule,
   }
 )(ModuleList);
 

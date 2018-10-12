@@ -1,26 +1,40 @@
 import * as React from 'react';
 import { ContentModule } from '../../../../../constants';
-import { Field, reduxForm, WrappedFieldInputProps } from 'redux-form';
+import { Field, reduxForm, WrappedFieldMetaProps } from 'redux-form';
+import { connect } from 'react-redux';
 
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import TextField, { TextFieldProps as MUITextFieldProps } from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+const RequiredValidation = (val) => Boolean(val) ? undefined : 'This is a required field';
+
+interface ReduxFormProps {
+  input?: any;
+  validate?: Array<(val: any) => boolean | string>;
+  meta?: WrappedFieldMetaProps;
+}
+
+type FullTextFieldProps = ReduxFormProps & MUITextFieldProps;
+
 const renderField = ({
   defaultValue,
   input,
-  ...rest
-}: {defaultValue: string, input?: WrappedFieldInputProps}) => (
+  label,
+  meta,
+  ...custom
+}: FullTextFieldProps) => (
   <TextField
-    autoFocus={true}
-    margin="dense"
     type="text"
     fullWidth={true}
+    error={meta.touched && meta.error}
     defaultValue={defaultValue}
+    label={label}
+    helperText={meta.error}
     {...input}
-    {...rest}
+    {...custom}
   />
 )
 
@@ -35,7 +49,10 @@ export const EditForm = (props) => {
           return (
             <Field
               name={prop}
+              required={true}
+              label={prop.charAt(0).toUpperCase() + prop.slice(1)}
               component={renderField}
+              validate={[RequiredValidation]}
               defaultValue={String(currentModule[prop])}
               key={index}
             />
@@ -46,10 +63,18 @@ export const EditForm = (props) => {
   );
 }
 
-export const ReduxEditForm = reduxForm({
-  form: 'editForm' // a unique identifier for this form
+
+
+const ReduxEditFormFragment = reduxForm({
+  form: 'editForm', // a unique identifier for this form
   // add validation functions here
 })(EditForm) as any;
+
+
+export const ReduxEditForm = connect((state, ownProps: any) => ({
+  ...ownProps,
+  initialValues: ownProps.currentModule
+}))(ReduxEditFormFragment);
 
 /// TODO: Split it into two components
 
